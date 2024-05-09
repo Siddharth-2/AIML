@@ -1,0 +1,90 @@
+1. Client 1
+import socket
+
+
+class Participant:
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect((self.host, self.port))
+
+    def start(self):
+        print("Participant started.")
+        self.socket.send('START'.encode())
+        decision = self.socket.recv(1024).decode()
+        print("Received decision:", decision)
+
+
+if __name__ == '__main__':
+    participant = Participant('127.0.0.1', 9999)
+    participant.start()
+
+2. Client 2
+import socket
+
+
+class Participant:
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect((self.host, self.port))
+
+    def start(self):
+        print("Participant started.")
+        self.socket.send('START'.encode())
+        decision = self.socket.recv(1024).decode()
+        print("Received decision:", decision)
+
+
+if __name__ == '__main__':
+    participant = Participant('127.0.0.1', 9999)
+    participant.start()
+
+3. Server
+import socket
+
+
+class Coordinator:
+    def __init__(self):
+        self.host = '127.0.0.1'
+        self.port = 9999
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.bind((self.host, self.port))
+        self.server.listen(5)
+        self.participants = []
+
+    def handle_client(self, client_socket):
+        request = client_socket.recv(1024).decode()
+        print("Received request:", request)
+
+        if request == 'START':
+            self.participants.append(client_socket)
+            if len(self.participants) == 2:
+                self.send_decision_request()
+        elif request == 'YES':
+            self.send_decision('COMMIT')
+        elif request == 'NO':
+            self.send_decision('ABORT')
+
+    def send_decision_request(self):
+        for participant in self.participants:
+            participant.send('DECISION'.encode())
+
+    def send_decision(self, decision):
+
+        for participant in self.participants:
+            participant.send(decision.encode())
+
+    def start(self):
+        print("Coordinator started.")
+        while True:
+            client_socket, _ = self.server.accept()
+            self.handle_client(client_socket)
+
+
+if __name__ == '__main__':
+    coordinator = Coordinator()
+    coordinator.start()
+

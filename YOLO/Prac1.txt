@@ -1,0 +1,33 @@
+For Creating database
+db.createCollection("DC")
+
+1. Insert
+db.doctor.insertOne({Name:"Mukesh Kumar", Age:"65", PID:"3", Phone:"1234567890"})
+
+db.doctor.insertMany([{Name:"Mukesh Kumar", Age:"65", PID:"3", 
+Phone:"1234567890"}, {Name:"Ramesh Prashant", Age:"45", PID:"2", 
+Phone:"1234567891"}, {Name:"Shashank Malhotra", Age:"40", PID:"1", 
+Phone:"1234567892"},{ Name:"Mahesh Shami", Age:"35", PID:"4", 
+Phone:"1234567895"}])
+
+2. Update
+db.doctor.updateOne({Name:"Ramesh Prashant"},{$set:{age:"26"}}
+
+3. Delete
+db.doctor.deleteOne({Name:"Mukesh Kumar"})
+
+4. Find
+db.doctor.find()
+
+5. Aggregate
+db.doctor.aggregate([{$group: { _id: "$PID", averageQua: {$avg: "$Age"} }}])
+//optional
+{ avgAge: {$avg: "$age"}}
+
+6. Index
+db.doctor.createIndex({Name:1})
+db.doctor.getIndexes()
+
+7. Text Search
+db.doctor.createIndex({"$**":"text"})
+db.doctor.find({$text:{$search:"Ramesh Prashant"}})

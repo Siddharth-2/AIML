@@ -1,0 +1,15 @@
+1. $eq
+db.College.find({Roll: {$eq:"24"}})
+
+2.  $gt and $lt operator
+db.College.find({Roll: {$gt:"22", $lt:"25"}})
+
+3. Sort
+db.College.find().sort({Age:"1"})
+
+4. Aggregate
+db.College.aggregate([{$group: { _id: "$ID", averageQua: {$avg: "$Age"} }}])
+optional// { avgAge: {$avg: "$age"}}
+
+5. $in
+db.College.find({ID: {$in: ["2020","2021"]}})
